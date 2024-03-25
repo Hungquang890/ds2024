@@ -1,0 +1,115 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{listings}
+
+\title{Distributed System}
+\author{Ngô Quang Hưng - BI12-191}
+\date{March 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{TCP Protocol Desgin}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{image.png}
+    \caption{Enter Caption}
+    \label{fig:enter-label}
+\end{figure}
+\subsection{
+ \item Sever-Side Implementation
+\item - Create a server that listens for incoming connections.
+\item - Accept connections from multiple clients.
+\item - Receive data from clients and write it to files.
+}
+\subsection{
+\item Client-Side Implementation
+\item - Create a client that connects to the server.
+\item - Prompt the user for the file name to send.
+\item - Read the file data and send it to the server.
+\item - Repeat the process for multiple files or until the client connection is terminated.
+}
+\subsection{
+\item Considerations
+\item - Error handling: Implement proper error handling for network issues, file access, and unexpected behavior.
+\item - Security: Add authentication and encryption if needed.
+\item - Scalability: Optimize for handling multiple clients simultaneously.
+}
+\section{Implementation the file transfer}
+\begin{lstlisting}
+    void write_file(int sockfd)
+{
+    int n; 
+    FILE *fp;
+    char *filename = "file2.txt";
+    char buffer[SIZE];
+
+    fp = fopen(filename, "w");
+    if(fp==NULL)
+    {
+        perror("[-]Error in creating file.");
+        exit(1);
+    }
+    while(1)
+    {
+        n = recv(sockfd, buffer, SIZE, 0);
+        if(n<=0)
+        {
+            break;
+            return;
+        }
+        fprintf(fp, "%s", buffer);
+        bzero(buffer, SIZE);
+    }
+    return;
+    
+}
+\end{lstlisting}
+\subsection{This code will create a file and save into buffer}
+\begin{lstlisting}
+int main()
+{
+    char *ip = "127.0.0.1";
+    int port = 8080;
+    int e;
+
+    int sockfd;
+    struct sockaddr_in server_addr;
+    FILE *fp;
+    char *filename = "file.txt";
+     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(sockfd<0)
+    {
+        perror("[-]Error in socket");
+        exit(1);
+    }
+     printf("[+]Server socket created. \n");
+
+     server_addr.sin_family = AF_INET;
+     server_addr.sin_port = port;
+     server_addr.sin_addr.s_addr = inet_addr(ip);
+
+     e = connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+     if(e == -1)
+     {
+         perror("[-]Error in Connecting");
+         exit(1);
+     }
+     printf("[+]Connected to server.\n");
+     fp = fopen(filename, "r");
+     if(fp == NULL)
+     {
+         perror("[-]Error in reading file.");
+         exit(1);
+     }
+     send_file(fp,sockfd);
+     printf("[+] File data send successfully. \n");
+     close(sockfd);
+     printf("[+]Disconnected from the server. \n");
+     return 0;
+
+}
+\end{lstlisting}
+\subsection{This code will send a file before to the client using socket}
+\end{document}
