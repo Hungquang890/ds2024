@@ -1,0 +1,6 @@
+MapReduce is a framework for processing parallelizable problems 
+across large datasets using a large number of computers (nodes),
+collectively referred to as a cluster (if all nodes are on the 
+same local network and use similar hardware) or a grid (if the 
+nodes are shared across geographically and administratively distributed 
+systems, and use more heterogeneous hardware). 
